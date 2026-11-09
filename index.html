@@ -4,8 +4,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FM onor AI Studio</title>
-    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+        body {
+            background-color: #050505;
+            background-image: url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .glow {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, rgba(0,0,0,0) 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+        .glass-container {
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1), 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+        .logo h1 {
+            color: #FFD700;
+            font-size: 3rem;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            margin-top: -10px;
+        }
+        .logo h2 {
+            color: #ffffff;
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+            margin-bottom: 10px;
+        }
+        .logo .star {
+            color: #FFD700;
+            font-size: 4rem;
+            text-shadow: 0 0 20px #FFD700;
+        }
+        .tagline {
+            color: #cccccc;
+            font-size: 0.8rem;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+        .input-box select, .input-box textarea {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            color: #fff;
+            margin-bottom: 15px;
+            outline: none;
+        }
+        .input-box textarea {
+            height: 100px;
+            resize: none;
+        }
+        .input-box button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            border: none;
+            border-radius: 15px;
+            color: #000;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .input-box button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.4);
+        }
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: 15px;
+            color: #fff;
+            text-align: right;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        .result-box h3 { color: #FFD700; margin-bottom: 10px;}
+        .result-box p { line-height: 1.6; white-space: pre-wrap; }
+    </style>
 </head>
 <body>
     <div class="background">
