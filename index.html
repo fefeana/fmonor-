@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FM onor AI Studio</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background">
+        <div class="glow"></div>
+    </div>
+
+    <div class="glass-container">
+        <div class="logo">
+            <span class="star">★</span>
+            <h1>FM onor</h1>
+            <h2>AI STUDIO</h2>
+        </div>
+
+        <div class="tagline">WHERE CREATIVITY MEETS A HIGHER INTELLIGENCE</div>
+
+        <div class="input-box">
+            <select id="toolSelect">
+                <option value="song">🎵 إنشاء أغنية</option>
+                <option value="video">🎬 إنشاء فيديو</option>
+                <option value="poem">✍️ كتابة شعر</option>
+            </select>
+            <textarea id="userPrompt" placeholder="اكتب فكرتك هنا... (مثال: أغنية يمنية عن البحر)"></textarea>
+            <button id="generateBtn">✨ أنشئ الآن ✨</button>
+        </div>
+
+        <div id="resultBox" class="result-box" style="display: none;">
+            <h3>النتيجة:</h3>
+            <p id="resultText"></p>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
