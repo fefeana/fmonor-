@@ -1,4 +1,3 @@
-/* محرك FM onor AI Studio */
 document.getElementById('generateBtn').addEventListener('click', async () => {
     const prompt = document.getElementById('userPrompt').value;
     const tool = document.getElementById('toolSelect').value;
@@ -26,11 +25,10 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     }
 
     try {
-        // الاتصال بـ OpenRouter
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        // 🔴 هنا الرابط بتاعك اللي إنت جبته بالظبط
+        const response = await fetch("https://fm-onor-api.samanatalie3.workers.dev/", {
             method: "POST",
             headers: {
-                "Authorization": "Bearer YOUR_API_KEY_HERE", // 🔴 هنا هيتحط المفتاح في Vercel لاحقاً
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -51,7 +49,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
         }
 
     } catch (error) {
-        resultText.innerText = "عذراً، حدث خطأ. تأكد من المفتاح والإنترنت.";
+        resultText.innerText = "عذراً، حدث خطأ. تأكد من الاتصال.";
     } finally {
         btn.innerText = "✨ أنشئ الآن ✨";
         btn.disabled = false;
