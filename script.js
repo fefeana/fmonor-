@@ -7,7 +7,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     const btn = document.getElementById('generateBtn');
 
     if (!prompt) {
-        alert("اكتب فكرتك الأول يا فارس!");
+        alert("اكتب فكرتك الأول يا ساموراي!");
         return;
     }
 
@@ -17,19 +17,36 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     resultBox.style.display = 'block';
     resultText.innerText = "الذكاء الاصطناعي بيفكر ويكتب...";
 
+    // 💡 إضافة الصورة برمجياً عشان منحتاجش نعدل الـ HTML
+    let imgElement = document.getElementById('aiImage');
+    if (!imgElement) {
+        imgElement = document.createElement('img');
+        imgElement.id = 'aiImage';
+        imgElement.style.width = '100%';
+        imgElement.style.borderRadius = '15px';
+        imgElement.style.marginBottom = '15px';
+        imgElement.style.display = 'none';
+        resultBox.insertBefore(imgElement, resultText);
+    }
+
     let systemPrompt = "";
 
     if (tool === 'song') {
-        systemPrompt =
-            "أنت ملحن وشاعر محترف في استوديو FM onor. اكتب كلمات أغنية كاملة مع مقطع وكورس بطريقة احترافية.";
+        systemPrompt = "أنت ملحن وشاعر محترف في استوديو FM onor. اكتب كلمات أغنية كاملة مع مقطع وكورس بطريقة احترافية.";
+        imgElement.style.display = 'none'; // اخفاء الصورة لو اختار أغنية
     }
     else if (tool === 'video') {
-        systemPrompt =
-            "أنت مخرج سينمائي محترف. اكتب سيناريو فيديو قصير من 3 مشاهد مع الوصف البصري والمؤثرات.";
+        systemPrompt = "أنت مخرج سينمائي محترف. اكتب سيناريو فيديو قصير من 3 مشاهد مع الوصف البصري والمؤثرات.";
+        
+        // 🎨 هنا بنجيب الصورة من الوصف
+        const imageUrl = `https://image.pollinations.ai/prompt/cinematic%20scene%20of%20${encodeURIComponent(prompt)}?width=800&height=450&nologo=true`;
+        imgElement.src = imageUrl;
+        imgElement.style.display = 'block';
+        resultText.innerText = "تم توليد الصورة! جاري كتابة السيناريو...";
     }
     else {
-        systemPrompt =
-            "أنت شاعر عربي فصيح. اكتب قصيدة جميلة ومؤثرة بناء على طلب المستخدم.";
+        systemPrompt = "أنت شاعر عربي فصيح. اكتب قصيدة جميلة ومؤثرة بناء على طلب المستخدم.";
+        imgElement.style.display = 'none'; // اخفاء الصورة لو اختار شعر
     }
 
     try {
@@ -42,7 +59,8 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    model: "google/gemini-2.0-flash-lite-001",
+                    // 🔴 هنا السر: غيرنا اسم النموذج لواحد شغال
+                    model: "qwen/qwen3.7-flash:free", 
                     messages: [
                         {
                             role: "system",
@@ -62,43 +80,27 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
         console.log("API RESPONSE:", data);
 
         if (!response.ok) {
-            resultText.innerText =
-                "خطأ: " +
-                (data.error?.message || data.error || "فشل الطلب");
+            resultText.innerText = "خطأ: " + (data.error?.message || data.error || "فشل الطلب");
             return;
         }
 
         if (data.error) {
-            resultText.innerText =
-                "خطأ: " +
-                (data.error?.message || data.error);
+            resultText.innerText = "خطأ: " + (data.error?.message || data.error);
             return;
         }
 
-        if (
-            data.choices &&
-            data.choices.length > 0 &&
-            data.choices[0].message
-        ) {
-            resultText.innerText =
-                data.choices[0].message.content;
+        if (data.choices && data.choices.length > 0 && data.choices[0].message) {
+            resultText.innerText = data.choices[0].message.content;
         } else {
-            resultText.innerText =
-                "لم يتم استلام رد من الذكاء الاصطناعي.";
+            resultText.innerText = "لم يتم استلام رد من الذكاء الاصطناعي.";
         }
 
     } catch (error) {
-
         console.error("ERROR:", error);
-
-        resultText.innerText =
-            "خطأ حقيقي: " + error.message;
+        resultText.innerText = "خطأ حقيقي: " + error.message;
     }
-
     finally {
         btn.innerText = "✨ أنشئ الآن ✨";
         btn.disabled = false;
     }
-
 });
-        
