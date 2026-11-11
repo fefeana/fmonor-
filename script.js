@@ -13,11 +13,14 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
 
     btn.innerText = "جاري الإبداع... ⏳";
     btn.disabled = true;
+    
+    // إيقاف أي صوت شغال من محاولة سابقة
+    window.speechSynthesis.cancel(); 
 
     resultBox.style.display = 'block';
     resultText.innerText = "الذكاء الاصطناعي بيفكر ويكتب...";
 
-    // 💡 إضافة الصورة برمجياً عشان منحتاجش نعدل الـ HTML
+    // 💡 إضافة مكان للصورة
     let imgElement = document.getElementById('aiImage');
     if (!imgElement) {
         imgElement = document.createElement('img');
@@ -25,6 +28,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
         imgElement.style.width = '100%';
         imgElement.style.borderRadius = '15px';
         imgElement.style.marginBottom = '15px';
+        imgElement.style.border = '2px solid #FFD700';
         imgElement.style.display = 'none';
         resultBox.insertBefore(imgElement, resultText);
     }
@@ -33,12 +37,12 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
 
     if (tool === 'song') {
         systemPrompt = "أنت ملحن وشاعر محترف في استوديو FM onor. اكتب كلمات أغنية كاملة مع مقطع وكورس بطريقة احترافية.";
-        imgElement.style.display = 'none'; // اخفاء الصورة لو اختار أغنية
+        imgElement.style.display = 'none'; 
     }
     else if (tool === 'video') {
         systemPrompt = "أنت مخرج سينمائي محترف. اكتب سيناريو فيديو قصير من 3 مشاهد مع الوصف البصري والمؤثرات.";
         
-        // 🎨 هنا بنجيب الصورة من الوصف
+        // 🎨 جلب الصورة من الوصف
         const imageUrl = `https://image.pollinations.ai/prompt/cinematic%20scene%20of%20${encodeURIComponent(prompt)}?width=800&height=450&nologo=true`;
         imgElement.src = imageUrl;
         imgElement.style.display = 'block';
@@ -46,11 +50,10 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     }
     else {
         systemPrompt = "أنت شاعر عربي فصيح. اكتب قصيدة جميلة ومؤثرة بناء على طلب المستخدم.";
-        imgElement.style.display = 'none'; // اخفاء الصورة لو اختار شعر
+        imgElement.style.display = 'none'; 
     }
 
     try {
-
         const response = await fetch(
             "https://fm-onor-api.samanatalie3.workers.dev/",
             {
@@ -59,25 +62,16 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    // 🔴 هنا السر: غيرنا اسم النموذج لواحد شغال
-                    model: "qwen/qwen3.7-flash:free", 
+                    // 🔴 السيرفر هو اللي هيختار النموذج
                     messages: [
-                        {
-                            role: "system",
-                            content: systemPrompt
-                        },
-                        {
-                            role: "user",
-                            content: prompt
-                        }
+                        { role: "system", content: systemPrompt },
+                        { role: "user", content: prompt }
                     ]
                 })
             }
         );
 
         const data = await response.json();
-
-        console.log("API RESPONSE:", data);
 
         if (!response.ok) {
             resultText.innerText = "خطأ: " + (data.error?.message || data.error || "فشل الطلب");
@@ -90,13 +84,19 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
         }
 
         if (data.choices && data.choices.length > 0 && data.choices[0].message) {
-            resultText.innerText = data.choices[0].message.content;
+            const finalResult = data.choices[0].message.content;
+            
+            // عرض النص
+            resultText.innerText = finalResult;
+            
+            // 🎙️ تشغيل الصوت
+            playAudio(finalResult); 
+
         } else {
             resultText.innerText = "لم يتم استلام رد من الذكاء الاصطناعي.";
         }
 
     } catch (error) {
-        console.error("ERROR:", error);
         resultText.innerText = "خطأ حقيقي: " + error.message;
     }
     finally {
@@ -104,3 +104,13 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
         btn.disabled = false;
     }
 });
+
+// 🎙️ دالة قراءة النص بصوت
+function playAudio(text) {
+    window.speechSynthesis.cancel(); 
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ar-SA'; 
+    utterance.rate = 0.9; 
+    utterance.pitch = 1;
+    window.speechSynthesis.speak(utterance);
+            }
